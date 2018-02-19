@@ -15,6 +15,10 @@ public class Resampler {
         System.loadLibrary("soundeditor");
     }
 
+    /**
+     * FFmpeg中支持很多格式参数，这里只接受常用的格式参数。
+     */
+
     public static final int AV_SAMPLE_FMT_U8 = 1;          ///< unsigned 8 bits
     public static final int AV_SAMPLE_FMT_S16 = 2;         ///< signed 16 bits
     public static final int AV_SAMPLE_FMT_S32 = 3;         ///< signed 32 bits
