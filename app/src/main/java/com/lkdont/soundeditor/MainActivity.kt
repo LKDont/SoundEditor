@@ -9,9 +9,7 @@ import com.lkdont.sound.edit.Resampler
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
 
-/**
- * 声音编辑测试工程
- */
+
 class MainActivity : AppCompatActivity() {
 
     private fun getSampleRate(pos: Int): Int {
