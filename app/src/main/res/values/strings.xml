@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">SoundEditor</string>
+
+    <string-array name="channel_layouts">
+        <item>Mono</item>
+        <item>Stereo</item>
+    </string-array>
+
+    <string-array name="sample_formats">
+        <item>U8</item>
+        <item>S16</item>
+        <item>S32</item>
+        <item>float</item>
+        <item>double</item>
+    </string-array>
+
+    <string-array name="sample_rates">
+        <item>8000</item>
+        <item>11025</item>
+        <item>16000</item>
+        <item>22050</item>
+        <item>32000</item>
+        <item>44100</item>
+        <item>48000</item>
+        <item>88200</item>
+        <item>96000</item>
+    </string-array>
+
+</resources>

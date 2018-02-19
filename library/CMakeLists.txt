@@ -1,0 +1,33 @@
+cmake_minimum_required(VERSION 3.4.1)
+
+add_library( soundeditor
+             SHARED
+             src/main/jni/resampler.c )
+
+find_library( log-lib
+              log )
+
+add_library(avutil
+            SHARED
+            IMPORTED )
+set_target_properties(
+    avutil
+    PROPERTIES IMPORTED_LOCATION
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavutil.so
+    )
+
+add_library(swresample
+            SHARED
+            IMPORTED )
+set_target_properties(
+    swresample
+    PROPERTIES IMPORTED_LOCATION
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libswresample.so
+    )
+
+include_directories(${CMAKE_SOURCE_DIR}/src/main/jniLibs/includes)
+
+target_link_libraries( soundeditor
+                       avutil
+                       swresample
+                       ${log-lib} )
