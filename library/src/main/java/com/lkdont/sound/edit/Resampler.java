@@ -11,10 +11,6 @@ import android.util.Log;
 
 public class Resampler {
 
-    static {
-        System.loadLibrary("soundeditor");
-    }
-
     /**
      * FFmpeg中支持很多格式参数，这里只接受常用的格式参数。
      */

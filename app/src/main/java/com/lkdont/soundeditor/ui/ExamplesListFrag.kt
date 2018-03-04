@@ -38,8 +38,7 @@ class ExamplesListFrag : Fragment() {
             override fun onItemClick(v: View, position: Int) {
                 when (position) {
                     0 -> EventBus.getDefault().post(MainAct.FragmentEvent(ResampleFrag()))
-                    1 -> {
-                    }
+                    1 -> EventBus.getDefault().post(MainAct.FragmentEvent(DecodeFrag()))
                 }
             }
         })

@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.4.1)
 
 add_library( soundeditor
              SHARED
-             src/main/jni/resampler.c )
+             src/main/jni/resampler.c
+             src/main/jni/decoder.c)
 
 find_library( log-lib
               log )
@@ -25,9 +26,19 @@ set_target_properties(
     ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libswresample.so
     )
 
+add_library(avcodec
+            SHARED
+            IMPORTED )
+set_target_properties(
+    avcodec
+    PROPERTIES IMPORTED_LOCATION
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavcodec.so
+    )
+
 include_directories(${CMAKE_SOURCE_DIR}/src/main/jniLibs/includes)
 
 target_link_libraries( soundeditor
                        avutil
                        swresample
+                       avcodec
                        ${log-lib} )
