@@ -1,12 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
 
-    <Button
-        android:id="@+id/test_btn"
+    <!-- 输入 -->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test" />
+        android:gravity="center_vertical">
 
-</FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="输入：" />
+
+        <EditText
+            android:id="@+id/input_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- 输出 -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="输出：" />
+
+        <EditText
+            android:id="@+id/output_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="解码器：" />
+
+        <Spinner
+            android:id="@+id/decoder_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/decoders" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/decode_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="解码" />
+
+</LinearLayout>

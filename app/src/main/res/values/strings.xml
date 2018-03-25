@@ -31,4 +31,9 @@
         <item>96000</item>
     </string-array>
 
+    <string-array name="decoders">
+        <item>Mp3</item>
+        <item>AAC</item>
+    </string-array>
+
 </resources>
