@@ -25,8 +25,9 @@ public class Decoder {
             Log.e("Decoder", "创建失败，已有一个解码器在运行。");
             return null;
         }
-        if (initDecoder(codec) != 0) {
-            Log.e("Decoder", "初始化解码器失败。");
+        int ret = initDecoder(codec);
+        if (ret != 0) {
+            Log.e("Decoder", "初始化解码器失败, code=" + ret);
             return null;
         }
         mDecoder = new Decoder();
