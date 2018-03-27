@@ -33,8 +33,8 @@ class DecodeFrag : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        input_et.setText("/sdcard/sound_editor/test-original.aac")
-        output_et.setText("/sdcard/sound_editor/test-original.pcm")
+        input_et.setText("/sdcard/sound_editor/SuperMalioRemix-44100.aac")
+        output_et.setText("/sdcard/sound_editor/SuperMalioRemix-44100.pcm")
         decoder_sp.setSelection(1)
 
         decode_btn.setOnClickListener {
