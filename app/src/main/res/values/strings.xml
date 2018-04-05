@@ -1,12 +1,6 @@
 <resources>
     <string name="app_name">SoundEditor</string>
 
-    <string-array name="examples_list">
-        <item>Resample Audio</item>
-        <item>Decode Audio</item>
-        <item>Record</item>
-    </string-array>
-
     <string-array name="channel_layouts">
         <item>Mono</item>
         <item>Stereo</item>

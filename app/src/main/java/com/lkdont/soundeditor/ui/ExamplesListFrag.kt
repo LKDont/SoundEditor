@@ -28,18 +28,22 @@ class ExamplesListFrag : Fragment() {
         return view
     }
 
+    private val examples = arrayOf(
+            "Resample",
+            "Decode"
+    )
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         content_rv.layoutManager = LinearLayoutManager(context)
-        val examples = context.resources.getStringArray(R.array.examples_list)
         val adapter = ExamplesAdapter(context, examples)
         content_rv.adapter = adapter
         adapter.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
-                when (position) {
-                    0 -> EventBus.getDefault().post(MainAct.FragmentEvent(ResampleFrag()))
-                    1 -> EventBus.getDefault().post(MainAct.FragmentEvent(DecodeFrag()))
-                    2 -> EventBus.getDefault().post(MainAct.FragmentEvent(RecordFrag()))
+                when (examples[position]) {
+                    "Resample" -> EventBus.getDefault().post(MainAct.FragmentEvent(ResampleFrag()))
+                    "Decode" -> EventBus.getDefault().post(MainAct.FragmentEvent(DecodeFrag()))
+//                    2 -> EventBus.getDefault().post(MainAct.FragmentEvent(RecordFrag()))
                 }
             }
         })
