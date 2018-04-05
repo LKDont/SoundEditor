@@ -4,7 +4,9 @@ add_library( soundeditor
              SHARED
              src/main/jni/resampler.c
              src/main/jni/decoder.c
-             src/main/jni/jni_decoder.c)
+             src/main/jni/jni_decoder.c
+             src/main/jni/infoloader.c
+             src/main/jni/jni_infoloader.c)
 
 find_library( log-lib
               log )
@@ -36,10 +38,20 @@ set_target_properties(
     ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavcodec.so
     )
 
+add_library(avformat
+            SHARED
+            IMPORTED )
+set_target_properties(
+    avformat
+    PROPERTIES IMPORTED_LOCATION
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavformat.so
+    )
+
 include_directories(${CMAKE_SOURCE_DIR}/src/main/jniLibs/includes)
 
 target_link_libraries( soundeditor
                        avutil
                        swresample
                        avcodec
+                       avformat
                        ${log-lib} )

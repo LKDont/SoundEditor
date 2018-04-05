@@ -30,7 +30,8 @@ class ExamplesListFrag : Fragment() {
 
     private val examples = arrayOf(
             "Resample",
-            "Decode"
+            "Decode",
+            "Player"
     )
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -43,6 +44,7 @@ class ExamplesListFrag : Fragment() {
                 when (examples[position]) {
                     "Resample" -> EventBus.getDefault().post(MainAct.FragmentEvent(ResampleFrag()))
                     "Decode" -> EventBus.getDefault().post(MainAct.FragmentEvent(DecodeFrag()))
+                    "Player" -> EventBus.getDefault().post(MainAct.FragmentEvent(PlayerFrag()))
 //                    2 -> EventBus.getDefault().post(MainAct.FragmentEvent(RecordFrag()))
                 }
             }

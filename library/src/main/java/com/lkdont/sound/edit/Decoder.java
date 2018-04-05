@@ -11,10 +11,6 @@ public class Decoder {
     // 这个id就是对应的结构体地址
     private long nativeDecoderId = 0L;
 
-    public long getNativeDecoderId() {
-        return nativeDecoderId;
-    }
-
     private native int _init(String codecName);
 
     private native int _feed_data(long decoder_id, byte[] data, int len);
