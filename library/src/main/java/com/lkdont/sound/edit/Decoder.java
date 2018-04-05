@@ -1,58 +1,59 @@
 package com.lkdont.sound.edit;
 
-import android.support.annotation.Nullable;
-import android.util.Log;
-
 /**
- * 解码器
+ * 声音解码器
  * <p>
- * Created by kidonliang on 2018/3/4.
+ * Created by kidonliang on 2018/4/4.
  */
-
 public class Decoder {
 
-    public static final int AV_CODEC_ID_MP3 = 1;
-    public static final int AV_CODEC_ID_AAC = 2;
+    // 解码器初始化后，都会与native端的一个解码器结构体绑定，
+    // 这个id就是对应的结构体地址
+    private long nativeDecoderId = 0L;
 
-    private static Decoder mDecoder;
-
-    private Decoder() {
+    public long getNativeDecoderId() {
+        return nativeDecoderId;
     }
 
-    @Nullable
-    public static Decoder createDecoder(int codec) {
-        if (mDecoder != null) {
-            Log.e("Decoder", "创建失败，已有一个解码器在运行。");
-            return null;
-        }
-        int ret = initDecoder(codec);
-        if (ret != 0) {
-            Log.e("Decoder", "初始化解码器失败, code=" + ret);
-            return null;
-        }
-        mDecoder = new Decoder();
-        return mDecoder;
+    private native int _init(String codecName);
+
+    private native int _feed_data(long decoder_id, byte[] data, int len);
+
+    private native int _get_decoded_size(long decoder_id);
+
+    private native int _receive_decoded_data(long decoder_id, byte[] data);
+
+    private native void _flush(long decoder_id);
+
+    private native void _close(long decoder_id);
+
+    /**
+     * 准备解码器
+     *
+     * @param codecName 解码器名字
+     * @return 0：成功；其它：错误码。
+     */
+    public int init(String codecName) {
+        return _init(codecName);
     }
 
-    @Nullable
-    public static Decoder getRunningDecoder() {
-        return mDecoder;
+    public int feedData(byte[] data, int len) {
+        return _feed_data(nativeDecoderId, data, len);
     }
 
-    private static native int initDecoder(int codec);
+    public int getDecodedSize() {
+        return _get_decoded_size(nativeDecoderId);
+    }
 
-    public native int feedData(byte[] data, int len);
+    public int receiveDecodedData(byte[] data) {
+        return _receive_decoded_data(nativeDecoderId, data);
+    }
 
-    public native int getDecodedSize();
-
-    public native int receiveDecodedData(byte[] data);
-
-    private static native void closeDecoder();
+    public void flush() {
+        _flush(nativeDecoderId);
+    }
 
     public void close() {
-        closeDecoder();
-        mDecoder = null;
+        _close(nativeDecoderId);
     }
-
-//    public static native int test();
 }

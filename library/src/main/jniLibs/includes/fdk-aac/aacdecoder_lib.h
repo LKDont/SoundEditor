@@ -2,7 +2,7 @@
 /* -----------------------------------------------------------------------------------------------------------
 Software License for The Fraunhofer FDK AAC Codec Library for Android
 
-© Copyright  1995 - 2015 Fraunhofer-Gesellschaft zur Förderung der angewandten Forschung e.V.
+ï¿½ Copyright  1995 - 2015 Fraunhofer-Gesellschaft zur Fï¿½rderung der angewandten Forschung e.V.
   All rights reserved.
 
  1.    INTRODUCTION
@@ -81,7 +81,7 @@ www.iis.fraunhofer.de/amm
 amm-info@iis.fraunhofer.de
 ----------------------------------------------------------------------------------------------------------- */
 
-/*****************************  MPEG-4 AAC Decoder  **************************
+/*****************************  MPEG-4 AAC JniDecoder  **************************
 
    Author(s):   Manuel Jander
 
@@ -96,7 +96,7 @@ amm-info@iis.fraunhofer.de
 
 \section SCOPE Scope
 
-This document describes the high-level interface and usage of the ISO/MPEG-2/4 AAC Decoder
+This document describes the high-level interface and usage of the ISO/MPEG-2/4 AAC JniDecoder
 library developed by the Fraunhofer Institute for Integrated Circuits (IIS).
 Depending on the library configuration, it implements decoding of AAC-LC (Low-Complexity),
 HE-AAC (High-Efficiency AAC, v1 and v2), AAC-LD (Low-Delay) and AAC-ELD (Enhanced Low-Delay).
@@ -105,7 +105,7 @@ All references to SBR (Spectral Band Replication) are only applicable to HE-AAC 
 versions of the library. All references to PS (Parametric Stereo) are only applicable to
 HE-AAC v2 versions of the library.
 
-\section DecoderBasics Decoder Basics
+\section DecoderBasics JniDecoder Basics
 
 This document can only give a rough overview about the ISO/MPEG-2 and ISO/MPEG-4 AAC audio
 coding standard. To understand all the terms in this document, you are encouraged to read
@@ -212,7 +212,7 @@ tpdec_lib.h and TRANSPORTDEC_INBUF_SIZE are not part of the decoder's library in
 only source-code clients may change this setting. If you received a library release, please ask us and
 we can change this in order to meet your memory requirements.
 
-\page OutputFormat Decoder audio output
+\page OutputFormat JniDecoder audio output
 
 \section OutputFormatObtaining Obtaining channel mapping information
 
@@ -546,7 +546,7 @@ typedef struct
   AUDIO_CHANNEL_TYPE *pChannelType;      /*!< Audio channel type of each output audio channel.                                     */
   UCHAR             *pChannelIndices;    /*!< Audio channel index for each output audio channel.
                                                See ISO/IEC 13818-7:2005(E), 8.5.3.2 Explicit channel mapping using a program_config_element() */
-  /* Decoder internal members. */
+  /* JniDecoder internal members. */
   INT               aacSampleRate;       /*!< Sampling rate in Hz without SBR (from configuration info).                           */
   INT               profile;             /*!< MPEG-2 profile (from file header) (-1: not applicable (e. g. MPEG-4)).               */
   AUDIO_OBJECT_TYPE aot;                 /*!< Audio Object Type (from ASC): is set to the appropriate value for MPEG-2 bitstreams (e. g. 2 for AAC-LC). */

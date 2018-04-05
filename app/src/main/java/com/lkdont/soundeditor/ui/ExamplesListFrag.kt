@@ -39,6 +39,7 @@ class ExamplesListFrag : Fragment() {
                 when (position) {
                     0 -> EventBus.getDefault().post(MainAct.FragmentEvent(ResampleFrag()))
                     1 -> EventBus.getDefault().post(MainAct.FragmentEvent(DecodeFrag()))
+                    2 -> EventBus.getDefault().post(MainAct.FragmentEvent(RecordFrag()))
                 }
             }
         })

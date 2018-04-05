@@ -70,7 +70,7 @@ enum AVSampleFormat get_sample_fmt(int fmt_type) {
  * 初始化
  */
 JNIEXPORT jint JNICALL
-Java_com_lkdont_sound_edit_Resampler_initResampler(JNIEnv *env, jclass type, jint in_nb_samples,
+Java_com_lkdont_sound_edit_JniResampler_initResampler(JNIEnv *env, jclass type, jint in_nb_samples,
                                                    jint in_ch_layout, jint out_ch_layout,
                                                    jint in_rate, jint out_rate,
                                                    jint in_sample_fmt, jint out_sample_fmt) {
@@ -152,7 +152,7 @@ int compute_destination_nb_samples() {
  * 重采样
  */
 JNIEXPORT jint JNICALL
-Java_com_lkdont_sound_edit_Resampler_resample(JNIEnv *env, jobject instance, jbyteArray input_,
+Java_com_lkdont_sound_edit_JniResampler_resample(JNIEnv *env, jobject instance, jbyteArray input_,
                                               jint inLen, jbyteArray output_) {
 
     if (!swr_ctx) {
@@ -189,11 +189,11 @@ Java_com_lkdont_sound_edit_Resampler_resample(JNIEnv *env, jobject instance, jby
  * 关闭重采样器
  */
 JNIEXPORT void JNICALL
-Java_com_lkdont_sound_edit_Resampler_closeResampler(JNIEnv *env, jobject instance) {
+Java_com_lkdont_sound_edit_JniResampler_closeResampler(JNIEnv *env, jobject instance) {
     close();
 }
 
 JNIEXPORT jint JNICALL
-Java_com_lkdont_sound_edit_Resampler_computeOutputSamplesNumber(JNIEnv *env, jobject instance) {
+Java_com_lkdont_sound_edit_JniResampler_computeOutputSamplesNumber(JNIEnv *env, jobject instance) {
     return compute_destination_nb_samples();
 }

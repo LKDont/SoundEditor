@@ -157,8 +157,8 @@ enum SwrDitherType {
 
 /** Resampling Engines */
 enum SwrEngine {
-    SWR_ENGINE_SWR,             /**< SW Resampler */
-    SWR_ENGINE_SOXR,            /**< SoX Resampler */
+    SWR_ENGINE_SWR,             /**< SW JniResampler */
+    SWR_ENGINE_SOXR,            /**< SoX JniResampler */
     SWR_ENGINE_NB,              ///< not part of API/ABI
 };
 

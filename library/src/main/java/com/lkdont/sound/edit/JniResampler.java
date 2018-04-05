@@ -9,7 +9,7 @@ import android.util.Log;
  * Created by kidonliang on 2018/2/18.
  */
 
-public class Resampler {
+public class JniResampler {
 
     /**
      * FFmpeg中支持很多格式参数，这里只接受常用的格式参数。
@@ -24,9 +24,9 @@ public class Resampler {
     public static final int AV_CH_LAYOUT_MONO = 1;      // 单声道
     public static final int AV_CH_LAYOUT_STEREO = 2;    // 立体声
 
-    private static Resampler mResampler;
+    private static JniResampler mResampler;
 
-    private Resampler() {
+    private JniResampler() {
     }
 
     private static native int initResampler(int in_nb_samples,
@@ -47,27 +47,27 @@ public class Resampler {
      * @return 若返回结果为null，则表示创建失败。
      */
     @Nullable
-    public static Resampler createResampler(int in_nb_samples,
-                                            int in_ch_layout, int out_ch_layout,
-                                            int in_rate, int out_rate,
-                                            int in_sample_fmt, int out_sample_fmt) {
+    public static JniResampler createResampler(int in_nb_samples,
+                                               int in_ch_layout, int out_ch_layout,
+                                               int in_rate, int out_rate,
+                                               int in_sample_fmt, int out_sample_fmt) {
         if (mResampler != null) {
-            Log.e("Resampler", "创建失败，已有一个重采样器在运行。");
+            Log.e("JniResampler", "创建失败，已有一个重采样器在运行。");
             return null;
         }
         // 创建
         if (initResampler(in_nb_samples, in_ch_layout, out_ch_layout, in_rate, out_rate, in_sample_fmt, out_sample_fmt) != 0) {
-            Log.e("Resampler", "初始化重采样器失败。");
+            Log.e("JniResampler", "初始化重采样器失败。");
             return null;
         }
-        mResampler = new Resampler();
+        mResampler = new JniResampler();
         return mResampler;
     }
 
     /**
      * @return 正在运行的重采样器，若返回结果为null，则表示没有。
      */
-    public static Resampler getRunningResampler() {
+    public static JniResampler getRunningResampler() {
         return mResampler;
     }
 

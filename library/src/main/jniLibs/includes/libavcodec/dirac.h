@@ -25,7 +25,7 @@
 
 /**
  * @file
- * Interface to Dirac Decoder/Encoder
+ * Interface to Dirac JniDecoder/Encoder
  * @author Marco Gerards <marco@gnu.org>
  * @author David Conrad
  * @author Jordi Ortiz

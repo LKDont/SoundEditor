@@ -991,7 +991,7 @@ typedef struct RcOverride{
 /* codec capabilities */
 
 /**
- * Decoder can use draw_horiz_band callback.
+ * JniDecoder can use draw_horiz_band callback.
  */
 #define AV_CODEC_CAP_DRAW_HORIZ_BAND     (1 <<  0)
 /**
@@ -1080,7 +1080,7 @@ typedef struct RcOverride{
  */
 #define AV_CODEC_CAP_VARIABLE_FRAME_SIZE (1 << 16)
 /**
- * Decoder is not a preferred choice for probing.
+ * JniDecoder is not a preferred choice for probing.
  * This indicates that the decoder is not a good choice for probing.
  * It could for example be an expensive to spin up hardware decoder,
  * or it could simply not provide a lot of useful information about
@@ -2591,7 +2591,7 @@ typedef struct AVCodecContext {
      * desired sample format
      * - encoding: Not used.
      * - decoding: Set by user.
-     * Decoder will decode to this format if it can.
+     * JniDecoder will decode to this format if it can.
      */
     enum AVSampleFormat request_sample_fmt;
 

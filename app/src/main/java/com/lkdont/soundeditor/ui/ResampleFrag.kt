@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.lkdont.sound.edit.Resampler
+import com.lkdont.sound.edit.JniResampler
 import com.lkdont.soundeditor.R
 import kotlinx.android.synthetic.main.resample_frag.*
 import java.io.File
@@ -103,19 +103,19 @@ class ResampleFrag : Fragment() {
 
     private fun getChannelLayout(pos: Int): Int {
         return when (pos) {
-            0 -> Resampler.AV_CH_LAYOUT_MONO
-            1 -> Resampler.AV_CH_LAYOUT_STEREO
+            0 -> JniResampler.AV_CH_LAYOUT_MONO
+            1 -> JniResampler.AV_CH_LAYOUT_STEREO
             else -> 0
         }
     }
 
     private fun getSampleFmt(pos: Int): Int {
         return when (pos) {
-            0 -> Resampler.AV_SAMPLE_FMT_U8
-            1 -> Resampler.AV_SAMPLE_FMT_S16
-            2 -> Resampler.AV_SAMPLE_FMT_S32
-            3 -> Resampler.AV_SAMPLE_FMT_FLT
-            4 -> Resampler.AV_SAMPLE_FMT_DBL
+            0 -> JniResampler.AV_SAMPLE_FMT_U8
+            1 -> JniResampler.AV_SAMPLE_FMT_S16
+            2 -> JniResampler.AV_SAMPLE_FMT_S32
+            3 -> JniResampler.AV_SAMPLE_FMT_FLT
+            4 -> JniResampler.AV_SAMPLE_FMT_DBL
             else -> 0
         }
     }
@@ -142,17 +142,17 @@ class ResampleFrag : Fragment() {
                                   nb_samples: Int): Int {
 
             val layout = when (ch_layout) {
-                Resampler.AV_CH_LAYOUT_MONO -> 1
-                Resampler.AV_CH_LAYOUT_STEREO -> 2
+                JniResampler.AV_CH_LAYOUT_MONO -> 1
+                JniResampler.AV_CH_LAYOUT_STEREO -> 2
                 else -> 0
             }
 
             return when (sample_fmt) {
-                Resampler.AV_SAMPLE_FMT_U8 -> layout * nb_samples
-                Resampler.AV_SAMPLE_FMT_S16 -> layout * 2 * nb_samples
-                Resampler.AV_SAMPLE_FMT_S32 -> layout * 4 * nb_samples
-                Resampler.AV_SAMPLE_FMT_FLT -> layout * 4 * nb_samples
-                Resampler.AV_SAMPLE_FMT_DBL -> layout * 8 * nb_samples
+                JniResampler.AV_SAMPLE_FMT_U8 -> layout * nb_samples
+                JniResampler.AV_SAMPLE_FMT_S16 -> layout * 2 * nb_samples
+                JniResampler.AV_SAMPLE_FMT_S32 -> layout * 4 * nb_samples
+                JniResampler.AV_SAMPLE_FMT_FLT -> layout * 4 * nb_samples
+                JniResampler.AV_SAMPLE_FMT_DBL -> layout * 8 * nb_samples
                 else -> 0
             }
         }
@@ -165,7 +165,7 @@ class ResampleFrag : Fragment() {
             val outFile = params[1]
             var outputStream: FileOutputStream? = null
 
-            var resampler: Resampler? = null
+            var resampler: JniResampler? = null
 
             try {
                 inputStream = FileInputStream(inFile)
@@ -179,7 +179,7 @@ class ResampleFrag : Fragment() {
 
                 var out_buffer = ByteArray(0)
 
-                resampler = Resampler.createResampler(in_nb_samples,
+                resampler = JniResampler.createResampler(in_nb_samples,
                         in_ch_layout, out_ch_layout,
                         in_rate, out_rate,
                         in_sample_fmt, out_sample_fmt)

@@ -7,6 +7,9 @@ import com.lkdont.soundeditor.R
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import android.support.annotation.NonNull
+
+
 
 /**
  * Main Page
@@ -37,6 +40,16 @@ class MainAct : AppCompatActivity() {
                 ?.replace(R.id.container, event.fragment)
                 ?.addToBackStack(null)
                 ?.commit()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val fragments = supportFragmentManager.fragments
+        if (fragments != null) {
+            for (fragment in fragments) {
+                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            }
+        }
     }
 
 }
