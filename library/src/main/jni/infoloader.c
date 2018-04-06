@@ -17,8 +17,8 @@ int infoloader_load(struct Info* info, int network) {
     AVFormatContext *fmt_ctx = NULL;
     int ret = avformat_open_input(&fmt_ctx, info->url, NULL, NULL);
     if (ret) {
-        char *buf[1024];
-        av_strerror(ret, buf, 1024);
+        char *buf[64];
+        av_strerror(ret, buf, 64);
         LOGE("%s", buf);
         return ret;
     }

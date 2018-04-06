@@ -27,9 +27,35 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
 
         const val MSG_WHAT_TIME = 1
         const val MSG_WHAT_STATUS = 2
+        const val MSG_WHAT_ERROR = 3
 
         const val MSG_KEY_CURTIME = "cur_time"
         const val MSG_KEY_TOTAL_TIME = "total_time"
+        const val MSG_KEY_ERROR = "error"
+    }
+
+    private fun postTimeEvent(curTimeMs: Long, totalTimeMs: Long) {
+        val msg = handler.obtainMessage(MSG_WHAT_TIME)
+        val data = Bundle()
+        data.putLong(MSG_KEY_CURTIME, curTimeMs)
+        data.putLong(MSG_KEY_TOTAL_TIME, totalTimeMs)
+        msg.data = data
+        handler.sendMessage(msg)
+    }
+
+    private fun postStatusEvent(status: Status) {
+        val msg = handler.obtainMessage(MSG_WHAT_STATUS)
+        msg.obj = status
+        handler.sendMessage(msg)
+    }
+
+    private fun postErrorEvent(errCode: Int, err: String) {
+        val msg = handler.obtainMessage(MSG_WHAT_ERROR)
+        msg.arg1 = errCode
+        val data = Bundle()
+        data.putString(MSG_KEY_ERROR, err)
+        msg.data = data
+        handler.sendMessage(msg)
     }
 
     @Volatile
@@ -39,9 +65,7 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
 
     fun setStatus(status: Status) {
         mStatus = status
-        val msg = handler.obtainMessage(MSG_WHAT_STATUS)
-        msg.obj = status
-        handler.sendMessage(msg)
+        postStatusEvent(status)
     }
 
     override fun run() {
@@ -51,21 +75,24 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        var ret: Int
 
-        // 获取声音信息
-        val info = Info(url)
-        ret = info.load()
-        if (ret != 0) {
-            Log.e(TAG, "$url : load info fail.")
-            return
-        }
-
+        var connection: HttpURLConnection? = null
         var inputStream: InputStream? = null
         var decoder: Decoder? = null
         var audioTrack: AudioTrack? = null
 
+        var ret: Int
+
         try {
+
+            // 获取声音信息
+            val info = Info(url)
+            ret = info.load()
+            if (ret != 0) {
+                Log.e(TAG, "$url : load info fail.")
+                postErrorEvent(SoundPlayer.ERROR_CODE_GET_INFO_FAIL, "SoundPlayer : load info fail.")
+                return
+            }
 
             if (mStatus == Status.STOPPED) {
                 Log.e(TAG, "$url : illegal status($mStatus) when preparing.")
@@ -74,7 +101,7 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
 
             // 初始化输入流
             if (info.isNetwork) {
-                val connection = URL(info.url).openConnection() as HttpURLConnection
+                connection = URL(info.url).openConnection() as HttpURLConnection
                 connection.readTimeout = DOWNLOAD_TIME_OUT
                 connection.connectTimeout = DOWNLOAD_TIME_OUT
                 connection.connect()
@@ -88,6 +115,7 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
             ret = decoder.init(info.codec)
             if (ret != 0) {
                 Log.e(TAG, "$url : init decoder fail.")
+                postErrorEvent(SoundPlayer.ERROR_CODE_INIT_FAIL, "SoundPlayer : init decoder fail.")
                 return
             }
             Log.i(TAG, "info = $info")
@@ -98,6 +126,7 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
                 2 -> AudioFormat.CHANNEL_OUT_STEREO
                 else -> {
                     Log.e(TAG, "$url : unsupported channels : " + info.channels)
+                    postErrorEvent(SoundPlayer.ERROR_CODE_INIT_FAIL, "SoundPlayer : unsupported channels.")
                     return
                 }
             }
@@ -114,9 +143,7 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
             // 将状态设置为播放中
             if (mStatus != Status.PAUSING) {
                 mStatus = Status.PLAYING
-                val msg = handler.obtainMessage(MSG_WHAT_STATUS)
-                msg.obj = Status.PLAYING
-                handler.sendMessage(msg)
+                postStatusEvent(Status.PLAYING)
             }
 
             var read: Int
@@ -141,9 +168,15 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
                     ret = decoder.feedData(inBuf, read)
                     if (ret != 0) {
                         Log.e(TAG, "$url : error while feeding data : ret = $ret")
+                        postErrorEvent(SoundPlayer.ERROR_CODE_DECODING, "SoundPlayer : error while feeding data.")
                         return
                     }
                     decodedSize = decoder.decodedSize
+                    if (decodedSize < 0) {
+                        Log.e(TAG, "$url : error while decoding : decodedSize = $decodedSize")
+                        postErrorEvent(SoundPlayer.ERROR_CODE_DECODING, "SoundPlayer : error while decoding.")
+                        return
+                    }
                     if (decodedSize > outBuf.size) {
                         // 重新分配outBuf
                         outBuf = ByteArray(decodedSize)
@@ -155,12 +188,7 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
                     nbSamples += (decodedSize / 2) / info.channels
                     timeInMs = (nbSamples * 1000L) / info.sampleRate
                     if (Math.abs(timeInMs - lastTimeInMs) > 500) {
-                        val msg = handler.obtainMessage(MSG_WHAT_TIME)
-                        val data = Bundle()
-                        data.putLong(MSG_KEY_CURTIME, timeInMs)
-                        data.putLong(MSG_KEY_TOTAL_TIME, durationInMs)
-                        msg.data = data
-                        handler.sendMessage(msg)
+                        postTimeEvent(timeInMs, durationInMs)
                         lastTimeInMs = timeInMs
                     }
 
@@ -172,13 +200,12 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
 
         } catch (e: Exception) {
             e.printStackTrace()
+            postErrorEvent(SoundPlayer.ERROR_CODE_OTHER, "SoundPlayer : " + e.message)
         } finally {
             Log.d(TAG, "stopped.")
             // 将状态设置成停止
             mStatus = Status.STOPPED
-            val msg = handler.obtainMessage(MSG_WHAT_STATUS)
-            msg.obj = Status.STOPPED
-            handler.sendMessage(msg)
+            postStatusEvent(Status.STOPPED)
 
             // 关闭播放器
             try {
@@ -197,6 +224,9 @@ internal class PlayTask(val url: String, private val handler: Handler) : Runnabl
 
             // 关闭解码器
             decoder?.close()
+
+            // 关闭连接
+            connection?.disconnect()
 
             // 关闭输入流
             try {

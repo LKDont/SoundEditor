@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.lkdont.sound.player.PlayEventListener
 import com.lkdont.sound.player.SoundPlayer
 import com.lkdont.sound.player.Status
@@ -38,6 +39,10 @@ class PlayerFrag : Fragment() {
         override fun onUpdatingStatus(status: Status) {
             Log.i(TAG, "onUpdatingStatus status=$status")
             updatePlayUi(status)
+        }
+
+        override fun onError(errCode: Int, err: String) {
+            Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -95,6 +100,7 @@ class PlayerFrag : Fragment() {
                 play_btn.text = "播放"
                 stop_btn.visibility = View.GONE
                 time_pb.progress = 0
+                mPlayer = null
             }
         }
     }

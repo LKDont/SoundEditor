@@ -16,6 +16,12 @@ class SoundPlayer(val url: String) {
     companion object {
 
         private const val TAG = "SoundPlayer"
+
+        const val ERROR_CODE_OTHER = -1
+        const val ERROR_CODE_GET_INFO_FAIL = -2
+        const val ERROR_CODE_INIT_FAIL = -3
+        const val ERROR_CODE_DECODING = -4
+
     }
 
     private val handler = EventHandler(this)
@@ -82,6 +88,11 @@ class SoundPlayer(val url: String) {
                 PlayTask.MSG_WHAT_STATUS -> {
                     val status = (msg.obj as? Status?) ?: return
                     player.mPlayEventListener?.onUpdatingStatus(status)
+                }
+
+                PlayTask.MSG_WHAT_ERROR -> {
+                    val err = msg.data?.getString(PlayTask.MSG_KEY_ERROR, null) ?: return
+                    player.mPlayEventListener?.onError(msg.arg1, err)
                 }
             }
         }

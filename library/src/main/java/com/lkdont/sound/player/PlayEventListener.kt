@@ -10,4 +10,6 @@ interface PlayEventListener {
     fun onUpdatingTime(curTime: Long, totalTime: Long)
 
     fun onUpdatingStatus(status: Status)
+
+    fun onError(errCode: Int, err: String)
 }
