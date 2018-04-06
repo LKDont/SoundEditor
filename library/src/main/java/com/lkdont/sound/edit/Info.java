@@ -13,9 +13,11 @@ import java.util.Locale;
 public class Info {
 
     private final String url;
+    private final boolean network;
 
     public Info(String url) {
         this.url = url;
+        network = url != null && url.startsWith("http");
     }
 
     private String codec = null;   // 解码器
@@ -33,6 +35,10 @@ public class Info {
 
     public String getUrl() {
         return url;
+    }
+
+    public boolean isNetwork() {
+        return network;
     }
 
     public String getCodec() {
@@ -64,13 +70,10 @@ public class Info {
             Log.e("Info", "load audio info fail : url == null");
             return -1;
         }
-        int network;
-        if (url.startsWith("http")) {
-            network = 1;
+        if (network) {
+            return _load(url, 1);
         } else {
-            network = 0;
+            return _load(url, 0);
         }
-
-        return _load(url, network);
     }
 }

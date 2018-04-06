@@ -192,10 +192,12 @@ int decoder_feed_data(struct Decoder *decoder, uint8_t *data, int len) {
     }
 
     if (decoder->header_size > 0) {
+        // skip header
         len = decoder->header_buffer_end - decoder->header_size;
         memcpy(decoder->header_buffer, decoder->header_buffer + decoder->header_size,
                (size_t) len);
         data = decoder->header_buffer;
+        decoder->header_size = 0;
     }
 
     int parse_ret;
