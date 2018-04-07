@@ -124,7 +124,7 @@ static int decode(struct Decoder *decoder) {
         }
         // 将已解码数据移至输出buffer中
         if (av_sample_fmt_is_planar(decoder->codec_ctx->sample_fmt)) {
-            // 输出的样本是平坦的
+            // 样本是平坦的，将其变成非平坦输出
             out_index = decoder->decoded_data_size;
             for (i = 0; i < decoder->decoded_frame->nb_samples; i++) {
                 for (ch = 0; ch < decoder->decoded_frame->channels; ch++) {
