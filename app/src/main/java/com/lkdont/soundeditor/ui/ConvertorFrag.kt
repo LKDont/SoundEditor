@@ -9,7 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.lkdont.sound.edit.JniResampler
+import com.lkdont.sound.edit.Codec
+import com.lkdont.sound.edit.Convertor
 import com.lkdont.soundeditor.R
 import kotlinx.android.synthetic.main.resample_frag.*
 import java.io.File
@@ -23,7 +24,7 @@ import java.lang.ref.WeakReference
  *
  * Created by kidonliang on 2018/3/4.
  */
-class ResampleFrag : Fragment() {
+class ConvertorFrag : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,12 +35,12 @@ class ResampleFrag : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // init ui
-        input_et.setText("/sdcard/sound_editor/SuperMalioRemix-Stereo-44100.pcm")
+        input_et.setText("/sdcard/sound_editor/SuperMalioRemix-Stereo-Original.pcm")
         in_channel_layouts_sp.setSelection(1)
         in_sample_rates_sp.setSelection(5)
         in_sample_fmts_sp.setSelection(1)
 
-        output_et.setText("/sdcard/sound_editor/out-SuperMalioRemix-Mono-32000.pcm")
+        output_et.setText("/sdcard/sound_editor/SuperMalioRemix-Mono-Original-32000.pcm")
         out_channel_layouts_sp.setSelection(0)
         out_sample_rates_sp.setSelection(4)
         out_sample_fmts_sp.setSelection(1)
@@ -57,15 +58,19 @@ class ResampleFrag : Fragment() {
                 Toast.makeText(context, "输出目录不存在", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            ResampleTask(this,
-                    getChannelLayout(in_channel_layouts_sp.selectedItemPosition),
-                    getChannelLayout(out_channel_layouts_sp.selectedItemPosition),
+            ConvertorTask(this,
+                    getChannelLayout(in_channel_layouts_sp.selectedItemPosition)
+                            ?: return@setOnClickListener,
+                    getChannelLayout(out_channel_layouts_sp.selectedItemPosition)
+                            ?: return@setOnClickListener,
 
                     getSampleRate(in_sample_rates_sp.selectedItemPosition),
                     getSampleRate(out_sample_rates_sp.selectedItemPosition),
 
-                    getSampleFmt(in_sample_fmts_sp.selectedItemPosition),
-                    getSampleFmt(out_sample_fmts_sp.selectedItemPosition))
+                    getSampleFmt(in_sample_fmts_sp.selectedItemPosition)
+                            ?: return@setOnClickListener,
+                    getSampleFmt(out_sample_fmts_sp.selectedItemPosition)
+                            ?: return@setOnClickListener)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, inputFile, outputFile)
         }
     }
@@ -101,22 +106,22 @@ class ResampleFrag : Fragment() {
         }
     }
 
-    private fun getChannelLayout(pos: Int): Int {
+    private fun getChannelLayout(pos: Int): Codec.ChannelLayout? {
         return when (pos) {
-            0 -> JniResampler.AV_CH_LAYOUT_MONO
-            1 -> JniResampler.AV_CH_LAYOUT_STEREO
-            else -> 0
+            0 -> Codec.ChannelLayout.MONO
+            1 -> Codec.ChannelLayout.STEREO
+            else -> null
         }
     }
 
-    private fun getSampleFmt(pos: Int): Int {
+    private fun getSampleFmt(pos: Int): Codec.SampleFormat? {
         return when (pos) {
-            0 -> JniResampler.AV_SAMPLE_FMT_U8
-            1 -> JniResampler.AV_SAMPLE_FMT_S16
-            2 -> JniResampler.AV_SAMPLE_FMT_S32
-            3 -> JniResampler.AV_SAMPLE_FMT_FLT
-            4 -> JniResampler.AV_SAMPLE_FMT_DBL
-            else -> 0
+            0 -> Codec.SampleFormat.AV_SAMPLE_FMT_U8
+            1 -> Codec.SampleFormat.AV_SAMPLE_FMT_S16
+            2 -> Codec.SampleFormat.AV_SAMPLE_FMT_S32
+            3 -> Codec.SampleFormat.AV_SAMPLE_FMT_FLT
+            4 -> Codec.SampleFormat.AV_SAMPLE_FMT_DBL
+            else -> null
         }
     }
 
@@ -125,47 +130,50 @@ class ResampleFrag : Fragment() {
      *
      * Created by kidonliang on 2018/2/19.
      */
-    class ResampleTask(page: ResampleFrag,
-                       val in_ch_layout: Int, val out_ch_layout: Int,
-                       val in_rate: Int, val out_rate: Int,
-                       val in_sample_fmt: Int, val out_sample_fmt: Int) : AsyncTask<File, Void, Boolean>() {
+    class ConvertorTask(page: ConvertorFrag,
+                        val in_ch_layout: Codec.ChannelLayout, val out_ch_layout: Codec.ChannelLayout,
+                        val in_rate: Int, val out_rate: Int,
+                        val in_sample_fmt: Codec.SampleFormat, val out_sample_fmt: Codec.SampleFormat)
+        : AsyncTask<File, Void, Boolean>() {
 
-        private val reference = WeakReference<ResampleFrag>(page)
+        private val TAG = "ConvertorTask"
+
+        private val reference = WeakReference<ConvertorFrag>(page)
 
         override fun onPreExecute() {
             val page = reference.get() ?: return
             page.showWaitingDialog()
         }
 
-        private fun getBufferSize(sample_fmt: Int,
-                                  ch_layout: Int,
+        private fun getBufferSize(sample_fmt: Codec.SampleFormat,
+                                  ch_layout: Codec.ChannelLayout,
                                   nb_samples: Int): Int {
 
             val layout = when (ch_layout) {
-                JniResampler.AV_CH_LAYOUT_MONO -> 1
-                JniResampler.AV_CH_LAYOUT_STEREO -> 2
+                Codec.ChannelLayout.MONO -> 1
+                Codec.ChannelLayout.STEREO -> 2
                 else -> 0
             }
 
             return when (sample_fmt) {
-                JniResampler.AV_SAMPLE_FMT_U8 -> layout * nb_samples
-                JniResampler.AV_SAMPLE_FMT_S16 -> layout * 2 * nb_samples
-                JniResampler.AV_SAMPLE_FMT_S32 -> layout * 4 * nb_samples
-                JniResampler.AV_SAMPLE_FMT_FLT -> layout * 4 * nb_samples
-                JniResampler.AV_SAMPLE_FMT_DBL -> layout * 8 * nb_samples
+                Codec.SampleFormat.AV_SAMPLE_FMT_U8 -> layout * nb_samples
+                Codec.SampleFormat.AV_SAMPLE_FMT_S16 -> layout * 2 * nb_samples
+                Codec.SampleFormat.AV_SAMPLE_FMT_S32 -> layout * 4 * nb_samples
+                Codec.SampleFormat.AV_SAMPLE_FMT_FLT -> layout * 4 * nb_samples
+                Codec.SampleFormat.AV_SAMPLE_FMT_DBL -> layout * 8 * nb_samples
                 else -> 0
             }
         }
 
         override fun doInBackground(vararg params: File?): Boolean {
-            Log.w("MainActivity", "Test Start...")
+            Log.w(TAG, "Test Start...")
 
             val inFile = params[0]
             var inputStream: FileInputStream? = null
             val outFile = params[1]
             var outputStream: FileOutputStream? = null
 
-            var resampler: JniResampler? = null
+            var convertor = Convertor()
 
             try {
                 inputStream = FileInputStream(inFile)
@@ -179,50 +187,55 @@ class ResampleFrag : Fragment() {
 
                 var out_buffer = ByteArray(0)
 
-                resampler = JniResampler.createResampler(in_nb_samples,
-                        in_ch_layout, out_ch_layout,
-                        in_rate, out_rate,
-                        in_sample_fmt, out_sample_fmt)
+                var ret = convertor.init(in_ch_layout, in_sample_fmt, in_rate,
+                        out_ch_layout, out_sample_fmt, out_rate);
 
-                if (resampler == null) {
-                    Log.e("MainActivity", "创建Resampler失败")
+                if (ret != 0) {
+                    Log.e(TAG, "创建Convertor失败")
                     return false
                 }
 
-                var out_nb_samples: Int
-                var output_size: Int
+                var convertedSize = 0
                 var read = inputStream.read(in_buffer, 0, in_buf_size)
                 while (read > 0) {
-                    out_nb_samples = resampler.computeOutputSamplesNumber()
-                    if (out_nb_samples < 0) {
-                        Log.e("MainActivity", "computeOutputSamplesNumber失败")
+
+                    ret = convertor.feedData(in_buffer, read)
+                    if (ret < 0) {
+                        Log.e(TAG, "feedData error")
                         return false
                     }
-                    if (getBufferSize(out_sample_fmt,
-                                    out_ch_layout,
-                                    out_nb_samples) > out_buffer.size) {
-                        // 重新分配buffer
-                        out_buffer = ByteArray(getBufferSize(out_sample_fmt,
-                                out_ch_layout, out_nb_samples))
+
+                    convertedSize = convertor.convertedSize
+                    if (convertedSize > 0) {
+                        if ((out_buffer.size) < convertedSize) {
+                            // 重新分配输出buffer
+                            Log.i(TAG, "重新分配输出buffer $convertedSize")
+                            out_buffer = ByteArray(convertedSize)
+                        }
+                        convertedSize = convertor.receiveConvertedData(out_buffer)
+                        // write file
+                        outputStream.write(out_buffer, 0, convertedSize)
                     }
-                    // 重采样
-                    output_size = resampler.resample(in_buffer, read, out_buffer)
-                    if (output_size < 0) {
-                        Log.e("MainActivity", "resample失败")
-                        return false
-                    }
-                    // 写入文件
-                    outputStream.write(out_buffer, 0, output_size)
                     // 读取下一个buffer
                     read = inputStream.read(in_buffer, 0, in_buf_size)
                 }
+                convertor.flush()
+                convertedSize = convertor.convertedSize
+                if (convertedSize > 0) {
+                    Log.i(TAG, "after flush convertor.convertedSize = $convertedSize")
+                    convertedSize = convertor.receiveConvertedData(out_buffer)
+                    // write file
+                    outputStream.write(out_buffer, 0, convertedSize)
+                }
+
                 return true
             } catch (e: Exception) {
                 e.printStackTrace()
                 return false
             } finally {
                 // 关闭
-                resampler?.close()
+                convertor.close()
+
                 try {
                     inputStream?.close()
                 } catch (e: IOException) {
@@ -234,7 +247,7 @@ class ResampleFrag : Fragment() {
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-                Log.w("MainActivity", "Test End...")
+                Log.w(TAG, "Test End...")
             }
         }
 

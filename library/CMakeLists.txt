@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.4.1)
 
 add_library( soundeditor
              SHARED
-             src/main/jni/resampler.c
              src/main/jni/decoder.c
              src/main/jni/jni_decoder.c
              src/main/jni/infoloader.c
-             src/main/jni/jni_infoloader.c)
+             src/main/jni/jni_infoloader.c
+             src/main/jni/convertor.c
+             src/main/jni/jni_convertor.c)
 
 find_library( log-lib
               log )

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +28,7 @@ class ExamplesListFrag : Fragment() {
     }
 
     private val examples = arrayOf(
-            "Resample",
+            "Convertor",
             "Decode",
             "Player"
     )
@@ -42,7 +41,7 @@ class ExamplesListFrag : Fragment() {
         adapter.setOnItemClickListener(object : OnItemClickListener {
             override fun onItemClick(v: View, position: Int) {
                 when (examples[position]) {
-                    "Resample" -> EventBus.getDefault().post(MainAct.FragmentEvent(ResampleFrag()))
+                    "Convertor" -> EventBus.getDefault().post(MainAct.FragmentEvent(ConvertorFrag()))
                     "Decode" -> EventBus.getDefault().post(MainAct.FragmentEvent(DecodeFrag()))
                     "Player" -> EventBus.getDefault().post(MainAct.FragmentEvent(PlayerFrag()))
 //                    2 -> EventBus.getDefault().post(MainAct.FragmentEvent(RecordFrag()))
