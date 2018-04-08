@@ -96,6 +96,7 @@ class DecodeFrag : Fragment() {
             // init
             val decoder = Decoder()
             ret = decoder.init(codecName)
+//            ret = decoder.init(codecName, Codec.ChannelLayout.MONO, 32000, Codec.SampleFormat.AV_SAMPLE_FMT_S16)
             if (ret != 0) {
                 Log.e(TAG, "decoder not found.")
                 return false
@@ -109,7 +110,7 @@ class DecodeFrag : Fragment() {
                 inputStream = FileInputStream(params[0])
                 outputStream = FileOutputStream(params[1])
                 val inBuffer = ByteArray(bufferSize)
-                var outBuffer: ByteArray? = null
+                var outBuffer = ByteArray(0)
 
                 // read data
                 var read = inputStream.read(inBuffer, 0, bufferSize)
@@ -125,7 +126,7 @@ class DecodeFrag : Fragment() {
                     // receive data
                     decodedSize = decoder.decodedSize
                     if (decodedSize > 0) {
-                        if ((outBuffer?.size ?: -1) < decodedSize) {
+                        if (outBuffer.size < decodedSize) {
                             // 重新分配输出buffer
                             Log.i(TAG, "重新分配输出buffer $decodedSize")
                             outBuffer = ByteArray(decodedSize)
@@ -139,13 +140,27 @@ class DecodeFrag : Fragment() {
                     read = inputStream.read(inBuffer, 0, bufferSize)
                 }
 
-                decoder.flush()
-                decodedSize = decoder.decodedSize
-                if (decodedSize > 0) {
-                    Log.i(TAG, "after flush decoder.decodedSize = $decodedSize")
-                    readDecodedSize = decoder.receiveDecodedData(outBuffer)
-                    // write file
-                    outputStream.write(outBuffer, 0, readDecodedSize)
+//                decoder.flush()
+//                decodedSize = decoder.decodedSize
+//                if (decodedSize > 0) {
+//                    Log.i(TAG, "after flush decoder.decodedSize = $decodedSize")
+//                    readDecodedSize = decoder.receiveDecodedData(outBuffer)
+//                    // write file
+//                    outputStream.write(outBuffer, 0, readDecodedSize)
+//                }
+
+                while (decoder.flush() > 0) {
+                    decodedSize = decoder.decodedSize
+                    if (decodedSize > 0) {
+                        if (outBuffer.size < decodedSize) {
+                            // 重新分配输出buffer
+                            Log.i(TAG, "flush 重新分配输出buffer $decodedSize")
+                            outBuffer = ByteArray(decodedSize)
+                        }
+                        readDecodedSize = decoder.receiveDecodedData(outBuffer)
+                        // write file
+                        outputStream.write(outBuffer, 0, readDecodedSize)
+                    }
                 }
 
                 return true

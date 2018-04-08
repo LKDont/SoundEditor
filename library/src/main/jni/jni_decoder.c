@@ -31,6 +31,41 @@ Java_com_lkdont_sound_edit_Decoder__1init(JNIEnv *env, jobject instance, jstring
 }
 
 JNIEXPORT jint JNICALL
+Java_com_lkdont_sound_edit_Decoder__1init_12(JNIEnv *env, jobject instance, jstring codecName_,
+                                             jint channels, jint sample_rate, jint sample_fmt) {
+
+    uint64_t dst_ch_layout;
+    if (channels == 1) {
+        dst_ch_layout = AV_CH_LAYOUT_MONO;
+    } else if (channels == 2) {
+        dst_ch_layout = AV_CH_LAYOUT_STEREO;
+    } else {
+        LOGE("不支持声道类型:%d", channels);
+        return -1;
+    }
+
+    enum AVSampleFormat dst_sp_fmt = (enum AVSampleFormat) sample_fmt;
+
+    const char *codecName = (*env)->GetStringUTFChars(env, codecName_, 0);
+
+    jclass thclass = (*env)->GetObjectClass(env, instance);
+    jfieldID fieldId = (*env)->GetFieldID(env, thclass, "nativeDecoderId", "J");
+
+    struct Decoder *decoder = decoder_init_2((char *) codecName, dst_ch_layout, sample_rate, dst_sp_fmt);
+    (*env)->ReleaseStringUTFChars(env, codecName_, codecName);
+
+    if (decoder) {
+        // 初始化成功
+        (*env)->SetLongField(env, instance, fieldId, (jlong) decoder);
+        return 0;
+    } else {
+        // 初始化失败
+        (*env)->SetLongField(env, instance, fieldId, (jlong) 0);
+        return -1;
+    }
+}
+
+JNIEXPORT jint JNICALL
 Java_com_lkdont_sound_edit_Decoder__1feed_1data(JNIEnv *env, jobject instance, jlong decoder_id,
                                                 jbyteArray data_, jint len) {
     if (decoder_id == 0) {
@@ -76,12 +111,12 @@ Java_com_lkdont_sound_edit_Decoder__1receive_1decoded_1data(JNIEnv *env, jobject
     return ret;
 }
 
-JNIEXPORT void JNICALL
+JNIEXPORT jint JNICALL
 Java_com_lkdont_sound_edit_Decoder__1flush(JNIEnv *env, jobject instance, jlong decoder_id) {
     if (decoder_id == 0)
-        return;
+        return -1;
     struct Decoder *decoder = (struct Decoder *) decoder_id;
-    decoder_flush(decoder);
+    return decoder_flush(decoder);
 }
 
 JNIEXPORT void JNICALL

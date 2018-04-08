@@ -13,13 +13,16 @@ public class Decoder {
 
     private native int _init(String codecName);
 
+    private native int _init_2(String codecName,
+                               int channels, int sample_rate, int sample_fmt);
+
     private native int _feed_data(long decoder_id, byte[] data, int len);
 
     private native int _get_decoded_size(long decoder_id);
 
     private native int _receive_decoded_data(long decoder_id, byte[] data);
 
-    private native void _flush(long decoder_id);
+    private native int _flush(long decoder_id);
 
     private native void _close(long decoder_id);
 
@@ -31,6 +34,11 @@ public class Decoder {
      */
     public int init(String codecName) {
         return _init(codecName);
+    }
+
+    public int init(String codecName,
+                    Codec.ChannelLayout channel, int sampleRate, Codec.SampleFormat sampleFormat) {
+        return _init_2(codecName, channel.getChannels(), sampleRate, sampleFormat.ordinal());
     }
 
     public int feedData(byte[] data, int len) {
@@ -45,8 +53,8 @@ public class Decoder {
         return _receive_decoded_data(nativeDecoderId, data);
     }
 
-    public void flush() {
-        _flush(nativeDecoderId);
+    public int flush() {
+        return _flush(nativeDecoderId);
     }
 
     public void close() {
