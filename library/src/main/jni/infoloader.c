@@ -17,9 +17,9 @@ int infoloader_load(struct Info* info, int network) {
     AVFormatContext *fmt_ctx = NULL;
     int ret = avformat_open_input(&fmt_ctx, info->url, NULL, NULL);
     if (ret) {
-        char *buf[64];
-        av_strerror(ret, buf, 64);
-        LOGE("%s", buf);
+//        char *buf[64];
+//        av_strerror(ret, buf, 64);
+//        LOGE("%s", buf);
         return ret;
     }
     ret = avformat_find_stream_info(fmt_ctx, NULL);

@@ -49,7 +49,7 @@ class PlayerFrag : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        input_et.setText("/sdcard/sound_editor/SuperMalioRemix-Stereo-Original.mp3")
+        input_et.setText("http://88.88.88.253:8081/IXC43ab253f175e21c746bacda242273c27/deduct_attachment/program/428/685/80d252ecfd392d02.mp3")
         play_btn.setOnClickListener {
             when (mPlayer?.getStatus()) {
 

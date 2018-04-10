@@ -212,6 +212,9 @@ static int decode(struct Decoder *decoder) {
     int ret = avcodec_send_packet(decoder->codec_ctx, decoder->pkt);
     if (ret < 0) {
         LOGE("decode error in avcodec_send_packet : ret = %d", ret);
+//        char *buf[64];
+//        av_strerror(ret, buf, 64);
+//        LOGE("%s", buf);
         return -1;
     }
 

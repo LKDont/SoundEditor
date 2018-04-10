@@ -18,7 +18,7 @@ add_library(avutil
 set_target_properties(
     avutil
     PROPERTIES IMPORTED_LOCATION
-    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavutil.so
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libavutil.so
     )
 
 add_library(swresample
@@ -27,7 +27,7 @@ add_library(swresample
 set_target_properties(
     swresample
     PROPERTIES IMPORTED_LOCATION
-    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libswresample.so
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libswresample.so
     )
 
 add_library(avcodec
@@ -36,7 +36,7 @@ add_library(avcodec
 set_target_properties(
     avcodec
     PROPERTIES IMPORTED_LOCATION
-    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavcodec.so
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libavcodec.so
     )
 
 add_library(avformat
@@ -45,7 +45,7 @@ add_library(avformat
 set_target_properties(
     avformat
     PROPERTIES IMPORTED_LOCATION
-    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi/libavformat.so
+    ${CMAKE_SOURCE_DIR}/src/main/jniLibs/${ANDROID_ABI}/libavformat.so
     )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/main/jniLibs/includes)
