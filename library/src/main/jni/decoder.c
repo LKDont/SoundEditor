@@ -28,6 +28,7 @@ struct Decoder *decoder_init(char *codec_name) {
     // find decoder
     decoder->codec = avcodec_find_decoder_by_name(codec_name);
     if (!decoder->codec) {
+//        LOGW("第一次没有找到解码器:%s", codec_name);
         // 注册所有可用解码器
         avcodec_register_all();
         decoder->codec = avcodec_find_decoder_by_name(codec_name);
