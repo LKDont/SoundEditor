@@ -26,13 +26,13 @@ import java.lang.ref.WeakReference
  */
 class ConvertorFrag : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.resample_frag, container, false)
+        val view = inflater.inflate(R.layout.resample_frag, container, false)
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // init ui
         input_et.setText("/sdcard/sound_editor/SuperMalioRemix-Stereo-Original.pcm")

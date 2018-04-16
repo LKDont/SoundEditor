@@ -23,15 +23,15 @@ import java.io.File
  */
 class RecordFrag : Fragment(), View.OnClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.record_frag, container, false)
+        val view = inflater.inflate(R.layout.record_frag, container, false)
         return view
     }
 
     private var recordPcmPath: String? = null
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val dir = context?.externalCacheDir
@@ -66,7 +66,9 @@ class RecordFrag : Fragment(), View.OnClickListener {
                     myRecorder = null
                 } else {
                     // start
-                    if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)) {
+                    if (PackageManager.PERMISSION_GRANTED !=
+                            ContextCompat.checkSelfPermission(context
+                                    ?: return, Manifest.permission.RECORD_AUDIO)) {
                         // request permission
                         requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 0)
                         return

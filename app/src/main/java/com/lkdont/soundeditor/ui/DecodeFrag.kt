@@ -27,13 +27,13 @@ class DecodeFrag : Fragment() {
 
     private val TAG = "DecodeFrag"
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.decode_audio_frag, container, false)
+        val view = inflater.inflate(R.layout.decode_audio_frag, container, false)
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         input_et.setText("/sdcard/sound_editor/SuperMalioRemix-Stereo-Original.mp3")

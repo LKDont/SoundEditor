@@ -92,7 +92,9 @@ add_library( soundeditor
              src/main/jni/infoloader.c
              src/main/jni/jni_infoloader.c
              src/main/jni/convertor.c
-             src/main/jni/jni_convertor.c)
+             src/main/jni/jni_convertor.c
+             src/main/jni/encoder.c
+             src/main/jni/jni_encoder.c)
 
 target_link_libraries( soundeditor
                        ${log-lib}

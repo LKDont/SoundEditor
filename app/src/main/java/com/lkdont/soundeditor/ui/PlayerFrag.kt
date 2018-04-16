@@ -22,9 +22,9 @@ class PlayerFrag : Fragment() {
 
     private val TAG = "PlayerFrag"
 
-    override fun onCreateView(inflater: LayoutInflater?,
+    override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.player_frag, container, false)
+        val view = inflater.inflate(R.layout.player_frag, container, false)
         return view
     }
 
@@ -46,7 +46,7 @@ class PlayerFrag : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         input_et.setText("http://88.88.88.253:8081/IXC43ab253f175e21c746bacda242273c27/deduct_attachment/program/428/685/80d252ecfd392d02.mp3")

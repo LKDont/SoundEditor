@@ -7,9 +7,6 @@ import com.lkdont.soundeditor.R
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import android.support.annotation.NonNull
-
-
 
 /**
  * Main Page
