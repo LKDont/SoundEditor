@@ -4,12 +4,12 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.lkdont.soundeditor.R
 import com.lkdont.soundeditor.sound.MyPlayer
 import com.lkdont.soundeditor.sound.MyRecorder

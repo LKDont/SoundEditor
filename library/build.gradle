@@ -9,8 +9,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        ndk { abiFilters "armeabi", "armeabi-v7a", "x86" }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk { abiFilters "armeabi-v7a", "x86" }
     }
 
     buildTypes {
@@ -25,25 +25,20 @@ android {
         }
     }
 
-    // Encapsulates your external native build configurations.
     externalNativeBuild {
-        // Encapsulates your CMake build configurations.
         cmake {
-            // Provides a relative path to your CMake build script.
             path "CMakeLists.txt"
+            version "3.10.2"
         }
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation "com.android.support:appcompat-v7:$appcompat_ver"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
 repositories {
     mavenCentral()
